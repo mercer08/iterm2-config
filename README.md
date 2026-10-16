@@ -89,6 +89,8 @@ python3 scripts/install.py --stage /tmp/iterm2-portable-preview
 
 GitHub Actions 在 Linux 上执行隐私和完整性检查，在 macOS 上执行迁移 smoke；`v*` 标签通过检查后，由 CI 打包并发布 ZIP。发布包只取明确允许的已跟踪文件，再验证 ZIP 内容。工作流默认只有读取权限，发布 job 单独获得 `contents: write`。
 
+工作流使用固定提交的 `actions/checkout v7.0.1`，关闭 checkout 凭据持久化；公开仓库不需要配置额外 CI secrets。
+
 ## 许可与来源
 
 本仓库脚本及原创配置使用 MIT License。字体与 Powerlevel10k 保留各自许可证，见 `fonts/` 与 `shell/POWERLEVEL10K-LICENSE.txt`。Comic Shanns 字体资产直接来自 Nerd Fonts v3.5.1，未修改；图标来源见 `fonts/ATTRIBUTION.md`。手札体为 Apple 字体，需要在目标 Mac 上自行启用。
