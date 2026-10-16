@@ -1,0 +1,75 @@
+name: Validate and release portable configuration
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
+
+jobs:
+  validate:
+    name: Linux privacy and integrity
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out package
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Scan all package bytes and decoded preference data
+        run: python3 scripts/verify.py
+      - name: Exercise staged install and seeded privacy and tamper rejection
+        run: python3 scripts/smoke.py
+      - name: Verify tracked release archive
+        run: python3 scripts/verify.py --build-archive "$RUNNER_TEMP/iterm2-config-check.zip"
+
+  macos:
+    name: macOS staged defaults import
+    runs-on: macos-latest
+    steps:
+      - name: Check out package
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Validate package
+        run: python3 scripts/verify.py
+      - name: Stage and import through a unique temporary defaults domain
+        run: python3 scripts/smoke.py --require-defaults
+
+  release:
+    name: Publish verified ZIP
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [validate, macos]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      RELEASE_TAG: ${{ github.ref_name }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Check out tagged package
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Build and rescan explicit tracked package ZIP
+        run: python3 scripts/verify.py --build-archive "$RUNNER_TEMP/iterm2-config.zip"
+      - name: Hash verified release asset
+        working-directory: ${{ runner.temp }}
+        run: sha256sum iterm2-config.zip > SHA256SUMS
+      - name: Publish downloadable package
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" "$RUNNER_TEMP/iterm2-config.zip" "$RUNNER_TEMP/SHA256SUMS" --clobber
+          else
+            gh release create "$RELEASE_TAG" "$RUNNER_TEMP/iterm2-config.zip" "$RUNNER_TEMP/SHA256SUMS" \
+              --verify-tag --title "$RELEASE_TAG" \
+              --notes 'Portable iTerm2 preferences, profiles, fonts, and shell appearance. The package passed Linux privacy and integrity validation and the macOS staged defaults import smoke check.'
+          fi

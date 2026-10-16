@@ -1,0 +1,34 @@
+# Local interpreter and operating-system artifacts
+__pycache__/
+*.py[cod]
+.DS_Store
+
+# Private exports, backups, installation stages, and generated downloads
+backup/
+backups/
+private/
+exports/
+raw/
+stage/
+staging/
+.staging/
+dist/
+*.zip
+*.bak
+*.backup
+*.original
+
+# Credentials, history, state databases, and private key material
+.env
+.env.*
+*.key
+*.pem
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+.zsh_history
+.bash_history
+*.savedState/

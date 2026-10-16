@@ -1,0 +1,25 @@
+{
+  "files": {
+    "fonts/ATTRIBUTION.md": "b579119f185fb63bc3d41b0f9c2c406b17e3307499bcfcaf0c605a72014b5e28",
+    "fonts/ComicShannsMonoNerdFont-Bold.otf": "2eaf2e1b411c40b673e755276854eab8b96eeb70f35258f04f5e4627487ae805",
+    "fonts/ComicShannsMonoNerdFont-Regular.otf": "3c4a181b0611e602bcf39db726f8fed56a52b4d43332cef81f1573e46d4c6010",
+    "fonts/ComicShannsMonoNerdFontMono-Bold.otf": "6c1db1a424e44f4a2f5a2b483394f746a575d328f7fb800e6dd58f8fc1b8ec43",
+    "fonts/ComicShannsMonoNerdFontMono-Regular.otf": "74763d9655f4f446ed7ba145cfcaa27ccf4093d079be9e4dff41027645da0946",
+    "fonts/FONT-LICENSE.md": "d11d2829ba3f9dd21e8851a96c315694319f454a6de0fefc5d56495b09a758c1",
+    "fonts/NERD-FONTS-LICENSE.txt": "356b8c377f48664254c22ceda66c566fdd431260bfe6d74621da3d736e9d40a0",
+    "preferences/com.googlecode.iterm2.plist": "ad63ad389ab3e5b36f56358a0a57d7d1c4c4a9f8d1bb08f2f8408741086be884",
+    "profiles/profiles.json": "f24ba37994e30ceeacd099915f4e76b858b875e03a9dca0cc6eb4ad4d92e446b",
+    "shell/POWERLEVEL10K-LICENSE.txt": "4fb6c63d7d7ece6d4a68c9a8cc42d3c6a5c7e1303f0b501f68aa6b470270aec6",
+    "shell/appearance.zsh": "88934df1333df37fe28f654cd45ebccd08748dabefa97eda18cacdfea695077c",
+    "shell/p10k-lean.zsh": "e29b4bc289eb58462d628a39b4b632cf2067df01a3cf1adfb521e8fadd40235b",
+    "shell/p10k.zsh": "eaae5cd6afa82f6255ed35fd44adca473ec8b712cf4efef7b47c464b9c8eec73"
+  },
+  "font_version": "3.5.1",
+  "format_version": 1,
+  "source_iterm2_version": "3.7.6",
+  "source_shell_versions": {
+    "powerlevel10k": "1.20.0",
+    "zsh-autosuggestions": "0.7.1",
+    "zsh-syntax-highlighting": "0.8.0"
+  }
+}
