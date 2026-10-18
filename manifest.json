@@ -12,7 +12,7 @@
     "shell/POWERLEVEL10K-LICENSE.txt": "4fb6c63d7d7ece6d4a68c9a8cc42d3c6a5c7e1303f0b501f68aa6b470270aec6",
     "shell/appearance.zsh": "88934df1333df37fe28f654cd45ebccd08748dabefa97eda18cacdfea695077c",
     "shell/p10k-lean.zsh": "e29b4bc289eb58462d628a39b4b632cf2067df01a3cf1adfb521e8fadd40235b",
-    "shell/p10k.zsh": "ecdff19e36586a0a071ba477d0f8d633526c1c844f6fe2d6350d8297b67061c7"
+    "shell/p10k.zsh": "ce51744e22d4c163406fb77efec00f51e6d9bbda65893bc160d371786b58bd79"
   },
   "font_version": "3.5.1",
   "format_version": 1,

@@ -38,10 +38,10 @@ typeset -g POWERLEVEL9K_DIR_ANCHOR_BOLD=true
 typeset -g POWERLEVEL9K_SHORTEN_DIR_LENGTH=2
 
 typeset -g POWERLEVEL9K_VCS_BRANCH_ICON=' '
-typeset -g POWERLEVEL9K_VCS_UNTRACKED_ICON='?'
-# 未暂存改动标记：Nerd Font 感叹号圆圈（需搭配 Mono 变体字体，否则会压住后面的数字）
+# Git 脏标记：Nerd Font 圆圈图标（需搭配 Mono 变体字体，否则图标会压住后面的数字）
+typeset -g POWERLEVEL9K_VCS_UNTRACKED_ICON=$'\uF059'
 typeset -g POWERLEVEL9K_VCS_UNSTAGED_ICON=$'\uF06A'
-typeset -g POWERLEVEL9K_VCS_STAGED_ICON='+'
+typeset -g POWERLEVEL9K_VCS_STAGED_ICON=$'\uF055'
 # Use the built-in formatter so Git colors follow this palette.
 unset POWERLEVEL9K_VCS_CONTENT_EXPANSION POWERLEVEL9K_VCS_LOADING_CONTENT_EXPANSION
 typeset -g POWERLEVEL9K_VCS_DISABLE_GITSTATUS_FORMATTING=false
