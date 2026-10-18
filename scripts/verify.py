@@ -24,6 +24,7 @@ PAYLOAD_DIRS = frozenset({"preferences", "profiles", "fonts", "shell"})
 PACKAGE_FILES = frozenset({
     "README.md", "LICENSE", "LICENSE.md", "manifest.json", "install.command", ".gitignore",
     ".github/workflows/ci.yml", "scripts/install.py", "scripts/verify.py", "scripts/smoke.py",
+    "scripts/icon_probe.swift",
     PREFERENCES, PROFILES, "fonts/FONT-LICENSE.md", "FONT-LICENSE.md",
     "shell/p10k.zsh", "shell/p10k-lean.zsh", "shell/appearance.zsh",
     "shell/POWERLEVEL10K-LICENSE.txt",

@@ -87,6 +87,16 @@ python3 scripts/install.py --stage /tmp/iterm2-portable-preview
 
 本地已经打开 iTerm2 时，可运行 `python3 scripts/smoke.py --require-defaults --require-running-iterm`，额外验证安装器会拒绝正在运行的应用。该检查直接调用只读保护逻辑，不执行真实导入。
 
+配置里的图标必须是字体自带、而且正好一格宽，否则就会和后面的字符重叠。需要核对图标时用 `scripts/icon_probe.swift`（macOS 自带的 Swift 即可，上面的 Python 检查不依赖它）：
+
+```sh
+scripts/icon_probe.swift check  ComicShannsMonoNFM '\uF059' '\uF06A' '\uF055' '\u2713'
+scripts/icon_probe.swift line   ComicShannsMonoNFM '\uF06A3'
+scripts/icon_probe.swift config ComicShannsMonoNFM shell/p10k.zsh
+```
+
+`check` 逐个字形报告它是否存在于该字体、字面宽度占几格，并标出会回退到系统字体或比一格宽的字形；`line` 交给 CoreText 真正排版一段文本，列出每一段实际使用的字体，用来发现悄悄回退到 Menlo 等字体的情况；`config` 扫描 shell 配置里会用到的所有字形，Powerlevel10k 的 `icons.zsh` 只读取本包所用的 `nerdfont-complete` preset 分支。三种模式默认只报告，加 `--strict` 后一旦发现问题就以非零状态退出。
+
 GitHub Actions 在 Linux 上执行隐私和完整性检查，在 macOS 上执行迁移 smoke；`v*` 标签通过检查后，由 CI 打包并发布 ZIP。发布包只取明确允许的已跟踪文件，再验证 ZIP 内容。工作流默认只有读取权限，发布 job 单独获得 `contents: write`。
 
 工作流使用固定提交的 `actions/checkout v7.0.1`，关闭 checkout 凭据持久化；公开仓库不需要配置额外 CI secrets。
