@@ -90,12 +90,14 @@ python3 scripts/install.py --stage /tmp/iterm2-portable-preview
 配置里的图标必须是字体自带、而且正好一格宽，否则就会和后面的字符重叠。需要核对图标时用 `scripts/icon_probe.swift`（macOS 自带的 Swift 即可，上面的 Python 检查不依赖它）：
 
 ```sh
-scripts/icon_probe.swift check  ComicShannsMonoNFM '\uF059' '\uF06A' '\uF055' '\u2713'
+scripts/icon_probe.swift check  fonts/ComicShannsMonoNerdFontMono-Regular.otf '\uF06A' '\u2713'
 scripts/icon_probe.swift line   ComicShannsMonoNFM '\uF06A3'
-scripts/icon_probe.swift config ComicShannsMonoNFM shell/p10k.zsh
+scripts/icon_probe.swift config fonts/ComicShannsMonoNerdFontMono-Regular.otf shell/p10k.zsh
 ```
 
-`check` 逐个字形报告它是否存在于该字体、字面宽度占几格，并标出会回退到系统字体或比一格宽的字形；`line` 交给 CoreText 真正排版一段文本，列出每一段实际使用的字体，用来发现悄悄回退到 Menlo 等字体的情况；`config` 扫描 shell 配置里会用到的所有字形，Powerlevel10k 的 `icons.zsh` 只读取本包所用的 `nerdfont-complete` preset 分支。三种模式默认只报告，加 `--strict` 后一旦发现问题就以非零状态退出。
+第一个参数可以是已安装字体的 PostScript 名，也可以直接指向字体文件（例如 `fonts/` 下的 `.otf`），后者不需要先安装字体。`check` 逐个字形报告它是否存在于该字体、字面宽度占几格，并标出会回退到系统字体或比一格宽的字形；`line` 交给 CoreText 真正排版一段文本，列出每一段实际使用的字体，用来发现悄悄回退到 Menlo 等字体的情况；`config` 扫描 shell 配置里会用到的所有字形，Powerlevel10k 的 `icons.zsh` 只读取本包所用的 `nerdfont-complete` preset 分支。三种模式默认只报告，加 `--strict` 后一旦发现问题就以非零状态退出。
+
+macOS 的 CI 用这一步把「提示符图标全部来自包内字体且正好一格」固定下来，因此以后新增或更换图标时，缺字形或宽度不对会在流水线上直接失败，而不是等你看到重叠才发现。
 
 GitHub Actions 在 Linux 上执行隐私和完整性检查，在 macOS 上执行迁移 smoke；`v*` 标签通过检查后，由 CI 打包并发布 ZIP。发布包只取明确允许的已跟踪文件，再验证 ZIP 内容。工作流默认只有读取权限，发布 job 单独获得 `contents: write`。
 

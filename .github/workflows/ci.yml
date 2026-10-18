@@ -41,6 +41,13 @@ jobs:
         run: python3 scripts/verify.py
       - name: Stage and import through a unique temporary defaults domain
         run: python3 scripts/smoke.py --require-defaults
+      - name: Audit prompt glyphs against the packaged font
+        run: |
+          scripts/icon_probe.swift config --strict fonts/ComicShannsMonoNerdFontMono-Regular.otf \
+            shell/p10k.zsh shell/appearance.zsh
+          scripts/icon_probe.swift check --strict fonts/ComicShannsMonoNerdFontMono-Regular.otf \
+            '\uF179' '\uF00D' '\uF013' '\uF252' '\uF418' '\uF055' '\uF059' '\uF06A' \
+            '\uF00C' '\uF023' '\uF015' '\uF07C' '\uF115' '\uF017' '\u276F'
 
   release:
     name: Publish verified ZIP

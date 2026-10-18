@@ -6,11 +6,13 @@
 //   scripts/icon_probe.swift line   <font> <text>...
 //   scripts/icon_probe.swift config <font> <shell-file>...
 //
-// <font> is a PostScript name such as ComicShannsMonoNFM. Text arguments accept
-// \uXXXX, \u{XXXXX} and \UXXXXXXXX escapes, so an icon can be written without
-// pasting a private-use character. `config` reads the shell appearance files and
-// audits every glyph they can display; Powerlevel10k's icons.zsh is read only in
-// the nerdfont-complete preset branch, which is the preset this package ships.
+// <font> is a PostScript name such as ComicShannsMonoNFM, or a path to a font
+// file such as fonts/ComicShannsMonoNerdFontMono-Regular.otf, which is audited
+// without installing it. Text arguments accept \uXXXX, \u{XXXXX} and
+// \UXXXXXXXX escapes, so an icon can be written without pasting a private-use
+// character. `config` reads the shell appearance files and audits every glyph
+// they can display; Powerlevel10k's icons.zsh is read only in the
+// nerdfont-complete preset branch, which is the preset this package ships.
 //
 // Why it matters: iTerm2 lays every character out in a single cell. A glyph that
 // is missing from the configured font is drawn by a CoreText fallback font at a
@@ -35,11 +37,17 @@ func die(_ message: String) -> Never {
     exit(2)
 }
 
-func loadFont(_ name: String) -> CTFont {
-    let font = CTFontCreateWithName(name as CFString, 100, nil)
+func loadFont(_ spec: String) -> CTFont {
+    if FileManager.default.fileExists(atPath: spec) {
+        guard let descriptors = CTFontManagerCreateFontDescriptorsFromURL(URL(fileURLWithPath: spec) as CFURL)
+            as? [CTFontDescriptor], let descriptor = descriptors.first
+        else { die("cannot read a font from \(spec)") }
+        return CTFontCreateWithFontDescriptor(descriptor, 100, nil)
+    }
+    let font = CTFontCreateWithName(spec as CFString, 100, nil)
     let resolved = CTFontCopyPostScriptName(font) as String
-    if resolved.caseInsensitiveCompare(name) != .orderedSame {
-        die("font \(name) is not installed (PostScript name resolved to \(resolved))")
+    if resolved.caseInsensitiveCompare(spec) != .orderedSame {
+        die("font \(spec) is not installed (PostScript name resolved to \(resolved))")
     }
     return font
 }
@@ -200,11 +208,11 @@ func collect(_ path: String, _ charset: CharacterSet) -> [(scalar: Unicode.Scala
 let arguments = CommandLine.arguments
 guard arguments.count >= 4 else { die("missing arguments") }
 let mode = arguments[1]
-let font = loadFont(arguments[2])
-let inputs = Array(arguments[3...])
-let strict = inputs.contains("--strict")
-let payload = inputs.filter { $0 != "--strict" }
-guard !payload.isEmpty else { die("missing input") }
+let strict = arguments.contains("--strict")
+let positional = arguments[2...].filter { !$0.hasPrefix("--") }
+guard positional.count >= 2 else { die("missing font or input") }
+let font = loadFont(positional[0])
+let payload = Array(positional[1...])
 let cell = cellWidth(font)
 let charset = CTFontCopyCharacterSet(font) as CharacterSet
 
