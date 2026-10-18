@@ -43,6 +43,35 @@
 
 快照中的 shell 依赖版本为 Powerlevel10k 1.20.0、zsh-autosuggestions 0.7.1、zsh-syntax-highlighting 0.8.0。字体和 Powerlevel10k 基线配置随包固定；Homebrew 插件安装使用当时可用版本。若要严格复现，使用相同的应用与依赖版本。macOS 字体版本、屏幕缩放、系统外观、壁纸及透明效果会影响最终渲染，配置包不能固定这些系统条件。
 
+## 提示符外观与图标
+
+双行提示符：左行为用户、目录、Git 状态，右端为时间；第二行为提示符符号。
+
+```text
+╭─  用户名  目录图标 目录  分支图标 分支  脏标记        时钟 时:分
+╰─ ❯
+```
+
+图标全部来自包内的 Comic Shanns Mono Nerd Font，配置里一律写成 `$'\uXXXX'` 转义，避免粘贴不可见字符：
+
+| 位置 | 码位 | 出现条件 |
+| --- | --- | --- |
+| 目录 | U+F015 / U+F07C / U+F115 | 家目录 / 家目录下的子目录 / 其它目录 |
+| 只读或不存在目录 | U+F023 | `POWERLEVEL9K_LOCK_ICON` |
+| Git 分支 | U+F418 | 位于 Git 仓库 |
+| 已暂存 / 未暂存 / 未跟踪 | U+F055 / U+F06A / U+F059 | 对应改动存在 |
+| 干净仓库 | U+F00C | 没有任何改动 |
+| 时间 | U+F017 | 右提示符 |
+| 命令失败 | U+F00D | 上一条命令非零退出 |
+| 后台任务 / 命令耗时 | U+F013 / U+F252 | 有后台任务 / 上一条命令超过 3 秒 |
+| 提示符符号 | U+276F | `❯` |
+
+**为什么图标必须来自 Mono 变体**：iTerm2 把每个字符排版在一格里，而 Nerd Font 的私用区（U+E000、U+F000…）由 Profile 的 **Special Fonts** 映射到具体字体。非 Mono 变体 `ComicShannsMonoNF` 的图标墨迹最宽达 1.68 格（例如 U+F06A），排版仍按一格计算，于是图标压住后面的字符——这正是本包此前「未暂存图标盖住数字」的成因，因此特殊字体映射与正文字体都固定为 Mono 变体 `ComicShannsMonoNFM`，图标墨迹恰好 1.00 格。
+
+字体里没有的字形会被 CoreText 静默回退到系统字体，宽度不再对齐：例如 `✓` U+2713 在 Comic Shanns 中不存在，会回退成 Menlo-Regular 并按 1.09 格渲染。所以图标只用包内字体确实包含的字符；新增或更换图标前用 `scripts/icon_probe.swift` 核对（见下文「验证和发布」），macOS 的 CI 也会用包内字体逐个审计提示符用到的字形。
+
+目录类目的设置容易踩坑：`POWERLEVEL9K_DIR_CLASSES` 是 `(匹配模式 类名 图标)` 三元组，其中第三项按官方文档应留空，图标由 `POWERLEVEL9K_DIR_<类名>_VISUAL_IDENTIFIER_EXPANSION` 指定。若第三项写成空字符串、又没有设置对应类名的标识符，目录段就不会显示任何图标；只设置 `POWERLEVEL9K_HOME_ICON` 或 `POWERLEVEL9K_FOLDER_ICON` 也不生效——它们只用于 Powerlevel10k 内置类目的默认值，一旦自定义 `DIR_CLASSES` 就不再参与。
+
 ## 本地备份与恢复
 
 每次实际变更前，安装器把受影响文件及原偏好域备份到：
