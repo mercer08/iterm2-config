@@ -39,7 +39,8 @@ typeset -g POWERLEVEL9K_SHORTEN_DIR_LENGTH=2
 
 typeset -g POWERLEVEL9K_VCS_BRANCH_ICON=' '
 typeset -g POWERLEVEL9K_VCS_UNTRACKED_ICON='?'
-typeset -g POWERLEVEL9K_VCS_MODIFIED_ICON='!'
+# 未暂存改动标记：Nerd Font 感叹号圆圈（需搭配 Mono 变体字体，否则会压住后面的数字）
+typeset -g POWERLEVEL9K_VCS_UNSTAGED_ICON=$'\uF06A'
 typeset -g POWERLEVEL9K_VCS_STAGED_ICON='+'
 # Use the built-in formatter so Git colors follow this palette.
 unset POWERLEVEL9K_VCS_CONTENT_EXPANSION POWERLEVEL9K_VCS_LOADING_CONTENT_EXPANSION
